@@ -4,7 +4,7 @@ local Logger = require'orak.common.logger'
 local M = {}
 
 local config = {
-    path = "~/personal/notes/organize/",
+    path = "~/.organize/",
     template = {
         path = "templates/",
         files = {

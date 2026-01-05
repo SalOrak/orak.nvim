@@ -14,7 +14,7 @@ Logger.prefix = "[Log]: "
     --- @param prefix string Prefix string. Defaults to "[Log]: ".
 function Logger.new(opts)
     local logger = setmetatable({
-        verbosity = opts.verbosity or Logger.verbosity
+        verbosity = opts.verbosity or Logger.verbosity,
         prefix = opts.prefix or Logger.prefix
     }, Logger)
     return logger
