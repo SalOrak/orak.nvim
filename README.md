@@ -4,6 +4,6 @@ Simple plugins for simple requirements.
 
 
 ## Modules
-- [common](./lua/common/)
-- [note](./lua/note/)
-- [organize](./lua/organize/)
+- [common](./lua/orak/common/)
+- [note](./lua/orak/note/)
+- [organize](./lua/orak/organize/)
