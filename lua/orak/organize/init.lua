@@ -1,22 +1,22 @@
 local Template = require'orak.common.template'
+local Logger = require'orak.common.logger'
 
 local M = {}
 
---- @enum
-local TEMPLATE_TYPES = {
-    YEARLY,
-    MONTHLY,
-    WEEKLY,
-}
-
 local config = {
     path = "~/personal/notes/organize/",
-    templates = {
+    template = {
         path = "templates/",
-        week = "Weekly.md",
-        monthly = "Monthly.md",
-        yearly = "Yearly.md",
+        files = {
+            Yearly = "yearly.md",
+            Monthly = "monthly.md",
+            Weekly = "weekly.md",
+        },
         opts = {}
+    },
+    logger = {
+        verbosity = vim.log.levels.WARN,
+        prefix = "[Organize]: ",
     },
     index= "Index.md",
     inbox = "Inbox.md"
@@ -24,20 +24,26 @@ local config = {
 
 M.setup = function(opts)
     config = vim.tbl_deep_extend('force', config, opts)
-    config.template = Template.new(opts.templates.opts)
+
+    config.template.files = vim.tbl_deep_extend('force', config.template.files, opts.template.files)
+
+
+    -- Common classes
+    config._template = Template.new(opts.templates.opts)
+    config._logger = Logger.new(opts.logger)
 end
 
 
-local get_template_filename = function(template_type)
-    if template_type == TEMPLATE_TYPES.YEARLY then
-        return config.templates.yearly
-    else if template_type == TEMPLATE_TYPES.MONTHLY then
-        return config.templates.monthly
-    else if template_type == TEMPLATE_TYPES.WEEKLY then
-        return config.templates.weekly
-    else
+M.get_template_filename = function(template_type)
+    local filename = config.template[template_type]
+
+    if not filename then
+        local msg = string.format("Template type {} not found. Possible keys are: '{}", template_type, vim.fn.join(vim.tbl_keys(config.template), "',")
+        config.logger:error(msg)
         return nil
     end
+
+    return filename
 end
 
 --- @param path string Path to create and use as base path.
@@ -71,9 +77,7 @@ local open_path = function(path, file, template_type)
         local template_file = string.format("{}/{}/{}", config.path, config.templates.path, template_filename)
         local copied = vim.uv.fs_copyfile(template_file, file_path)
         if not copied then
-            vim.notify(
-                string.format("Error while copying template file {} to {}.", template_file, file_path), 
-                vim.log.levels.ERROR)
+            config._logger:warn(string.format("Error while copying template file {} to {}.", template_file, file_path)) 
         end
 
     end
