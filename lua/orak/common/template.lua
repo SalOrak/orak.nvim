@@ -22,13 +22,13 @@ local default_opts = {
 	_body = "",
 	_pattern = "{([^:}]+):?(.-)}",
 	_substitution = {
-		title = function(obj, _)
+		title = function(obj, args)
 			return obj.data.title
 		end,
-		date = function(obj, opts)
+		date = function(obj, args)
 			local format = "%d-%m-%Y"
-			if type(opts) == "string" and opts ~= "" then
-				format = opts
+			if type(opts) == "string" and args~= "" then
+				format = args
 			end
 			return os.date(format)
 		end,
@@ -93,6 +93,10 @@ function Template.new(opts)
 
 	local template = setmetatable(class_data, Template)
 	template._header = string.rep(template.data.enclose, 3, "")
+
+	template.data = vim.tbl_deep_extend("force", template.data, opts or {})
+	template._substitution = vim.tbl_deep_extend("keep", template._substitution, opts.substitution or {})
+
 	return template
 end
 
