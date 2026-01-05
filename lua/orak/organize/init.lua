@@ -39,7 +39,7 @@ M.get_template_filename = function(template_type)
 
     if not filename then
         local msg = string.format("Template type {} not found. Possible keys are: '{}", template_type, vim.fn.join(vim.tbl_keys(config.template), "',"))
-        config.logger:error(msg)
+        config._logger:error(msg)
         return nil
     end
 
