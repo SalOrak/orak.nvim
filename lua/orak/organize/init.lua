@@ -113,3 +113,5 @@ M.open_inbox = function()
     local inbox_path = string.format("{}/{}",M.path, year)
     open_path(inbox_path, M.inbox)
 end
+
+return M
