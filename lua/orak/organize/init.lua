@@ -68,7 +68,7 @@ local open_path = function(path, file, template_type)
     --- If the file does not exist, we copy the template one
     if not file_stat then
         local template_filename = M.get_template_filename(template_type)
-        local template_file = string.format("{}/{}/{}", config.path, config.templates.path, template_filename)
+        local template_file = string.format("{}/{}/{}", config.path, config.template.path, template_filename)
         local copied = vim.uv.fs_copyfile(template_file, file_path)
         if not copied then
             config._logger:warn(string.format("Error while copying template file {} to {}.", template_file, file_path)) 
