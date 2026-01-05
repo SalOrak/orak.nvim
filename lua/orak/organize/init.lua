@@ -29,8 +29,8 @@ M.setup = function(opts)
 
 
     -- Common classes
-    config._template = Template.new(opts.templates.opts)
-    config._logger = Logger.new(opts.logger)
+    config._template = Template.new(opts.template.opts or {})
+    config._logger = Logger.new(opts.logger or {})
 end
 
 
