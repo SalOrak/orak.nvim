@@ -95,7 +95,7 @@ function Template.new(opts)
 	template._header = string.rep(template.data.enclose, 3, "")
 
 	template.data = vim.tbl_deep_extend("force", template.data, opts or {})
-	template._substitution = vim.tbl_deep_extend("keep", template._substitution, opts.substitution or {})
+	template._substitution = vim.tbl_deep_extend("force", template._substitution, opts.substitution or {})
 
 	return template
 end

@@ -11,28 +11,21 @@ local config = {
             yearly = Template.new({
                 enclose = "+",
                 eq = "="})
-                :withHeader("creation_date", "{date:%d-%m-%Y}")
+                :withHeader("creation-date", "{date:%d-%m-%Y}")
                 :withBody("# {date:%Y}\n"),
 
             monthly = Template.new({
                 enclose = "+",
                 eq = "="})
-                :withHeader("creation_date", "{date:%d-%m-%Y}")
+                :withHeader("creation-date", "{date:%d-%m-%Y}")
                 :withBody("# {date:%B} monthly goals\n"),
             weekly = Template.new({
                 enclose = "+",
                 eq = "="})
-                :withHeader("creation_date", "{date:%d-%m-%Y}")
+                :withHeader("creation-date", "{date:%d-%m-%Y}")
                 :withBody("# Week {week}\n")
         },
-        opts = {
-            substitution = {
-                week = function(obj, _)
-                    local week_number = os.date('%V') % 4
-                    return string.format("%s", week_number)
-                end,
-            }
-        }
+        opts = {}
     },
     logger = {
         verbosity = vim.log.levels.WARN,
@@ -50,7 +43,6 @@ M.setup = function(opts)
     config.template.opts = vim.tbl_deep_extend('force', config.template.opts, opts.template.opts or {})
 
     -- Common classes
-    config._template = Template.new(config.template.opts or {})
     config._logger = Logger.new(opts.logger or {})
 end
 
@@ -94,7 +86,7 @@ local open_path = function(path, file, template_type)
     --- If the file does not exist, we generate the template one
     if not file_stat then
         local template_preset = M.get_template(template_type)
-        template_preset:setOpts({ title = ""})
+        template_preset:setOpts(config.template.opts or {})
         File.writeFile(file_path, template_preset:build())
     end
 
