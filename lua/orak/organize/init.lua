@@ -54,6 +54,10 @@ M.setup = function(opts)
     config._logger = Logger.new(opts.logger or {})
 end
 
+M._get_config = function()
+    return config
+end
+
 
 --- @return template Template template instance
 M.get_template = function(template_type)
