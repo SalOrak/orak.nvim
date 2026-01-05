@@ -45,7 +45,7 @@ local config = {
 M.setup = function(opts)
     config = vim.tbl_deep_extend('force', config, opts)
 
-    config.template.set = vim.tbl_deep_extend('force', config.template.set, opts.template.set)
+    config.template.set = vim.tbl_deep_extend('force', config.template.set, opts.template.set or {})
 
     -- Common classes
     config._template = Template.new(opts.template.opts or {})
