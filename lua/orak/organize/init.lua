@@ -48,9 +48,10 @@ M.setup = function(opts)
     config.template.set = vim.tbl_deep_extend('force', config.template.set, opts.template.set)
 
     -- Common classes
-    P(opts.template.opts)
     config._template = Template.new(opts.template.opts or {})
     config._logger = Logger.new(opts.logger or {})
+
+    config._logger:warn(vim.inspect(opts.template))
 end
 
 
