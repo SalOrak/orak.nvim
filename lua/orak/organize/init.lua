@@ -8,9 +8,9 @@ local config = {
     template = {
         path = "templates/",
         files = {
-            Yearly = "yearly.md",
-            Monthly = "monthly.md",
-            Weekly = "weekly.md",
+            yearly = "yearly.md",
+            monthly = "monthly.md",
+            weekly = "weekly.md",
         },
         opts = {}
     },
@@ -88,30 +88,30 @@ end
 
 M.open_year = function()
     local year = os.date('%Y')
-    local year_folder = M.path .. year
+    local year_folder = config.path .. year
 
-    open_path(year_folder, M.index, M.templates.yearly)
+    open_path(year_folder, config.index, "yearly")
 end
 
 M.open_month= function()
     local month = os.date('%Y/%B')
-    local month_folder = M.path .. month
+    local month_folder = config.path .. month
 
-    open_path(month_folder, M.index, M.templates.monthly)
+    open_path(month_folder, config.index, "monthly")
 end
 
 M.open_week = function()
     local week = os.date('%Y/%m')
     local num_week = os.date('%V') % 4
     local week_file = string.format("/Week-{}.md", num_week)
-    local week_folder = M.path .. week 
-    open_path(week_folder, week_file, M.templates.week)
+    local week_folder = config.path .. week 
+    open_path(week_folder, week_file, "weekly")
 end
 
 M.open_inbox = function()
     local year = os.date('%Y')
-    local inbox_path = string.format("{}/{}",M.path, year)
-    open_path(inbox_path, M.inbox)
+    local inbox_path = string.format("{}/{}",config.path, year)
+    open_path(inbox_path, config.inbox)
 end
 
 return M
