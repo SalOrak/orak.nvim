@@ -35,10 +35,10 @@ end
 
 
 M.get_template_filename = function(template_type)
-    local filename = config.template[template_type]
+    local filename = config.template.files[template_type]
 
     if not filename then
-        local msg = string.format("Template type %s not found. Possible keys are: '%s", template_type, vim.fn.join(vim.tbl_keys(config.template), "',"))
+        local msg = string.format("Template type %s not found. Possible keys are: '%s", template_type, vim.fn.join(vim.tbl_keys(config.template.files), "', '"))
         config._logger:error(msg)
         return nil
     end
@@ -82,14 +82,14 @@ end
 
 M.open_year = function()
     local year = os.date('%Y')
-    local year_folder = config.path .. year
+    local year_folder = string.format("%s/%s", config.path, year)
 
     open_path(year_folder, config.index, "yearly")
 end
 
 M.open_month= function()
     local month = os.date('%Y/%B')
-    local month_folder = config.path .. month
+    local month_folder = string.format("%s/%s", config.path, month)
 
     open_path(month_folder, config.index, "monthly")
 end
@@ -98,7 +98,7 @@ M.open_week = function()
     local week = os.date('%Y/%m')
     local num_week = os.date('%V') % 4
     local week_file = string.format("/Week-%s.md", num_week)
-    local week_folder = config.path .. week 
+    local week_folder = string.format("%s/%s", config.path, week)
     open_path(week_folder, week_file, "weekly")
 end
 
