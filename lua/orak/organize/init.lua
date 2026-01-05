@@ -60,15 +60,9 @@ local open_path = function(path, file, template_type)
         vim.fn.mkdir(real_path, "p")
     end
 
-    local path_stat = vim.uv.fs_stat(real_path)
+    local path_stat = vim.uv.fs_stat(norm_path)
 
-    --- If the path does not exists, we create it (again?)
-    if not path_stat then
-        vim.fn.mkdir(real_path, "p")
-    end
-
-
-    local file_path = string.format("{}/{}", real_path, file)
+    local file_path = string.format("{}/{}", norm_path, file)
 
     local file_stat = vim.uv.fs_stat(file_path)
     --- If the file does not exist, we copy the template one
