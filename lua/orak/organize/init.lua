@@ -1,18 +1,38 @@
 local Template = require'orak.common.template'
 local Logger = require'orak.common.logger'
+local File = require'orak.common.file'
 
 local M = {}
 
 local config = {
     path = "~/.organize/",
     template = {
-        path = "templates/",
-        files = {
-            yearly = "yearly.md",
-            monthly = "monthly.md",
-            weekly = "weekly.md",
+        set = {
+            yearly = Template.new({
+                enclose = "+",
+                eq = "="})
+                :withHeader("date", "{date:%d-%m-%Y}")
+                :withBody("# {date:%Y}\n"),
+
+            monthly = Template.new({
+                enclose = "+",
+                eq = "="})
+                :withHeader("date", "{date:%d-%m-%Y}")
+                :withBody("# {date:%B} monthly goals\n"),
+            weekly = Template.new({
+                enclose = "+",
+                eq = "="})
+                :withHeader("date", "{date:%d-%m-%Y}")
+                :withBody("# Week {week}\n")
         },
-        opts = {}
+        opts = {
+            substitution = {
+                week = function(obj, _)
+                    local week_number = os.date('%V') % 4
+                    return string.format("%s", week_number)
+                end,
+            }
+        }
     },
     logger = {
         verbosity = vim.log.levels.WARN,
@@ -34,11 +54,12 @@ M.setup = function(opts)
 end
 
 
-M.get_template_filename = function(template_type)
-    local filename = config.template.files[template_type]
+--- @return template Template template instance
+M.get_template = function(template_type)
+    local filename = config.template.set[template_type]
 
     if not filename then
-        local msg = string.format("Template type %s not found. Possible keys are: '%s", template_type, vim.fn.join(vim.tbl_keys(config.template.files), "', '"))
+        local msg = string.format("Template type %s not found. Possible keys are: '%s", template_type, vim.fn.join(vim.tbl_keys(config.template.set), "', '"))
         config._logger:error(msg)
         return nil
     end
@@ -65,17 +86,13 @@ local open_path = function(path, file, template_type)
     local file_path = string.format("%s/%s", norm_path, file)
 
     local file_stat = vim.uv.fs_stat(file_path)
-    --- If the file does not exist, we copy the template one
+    --- If the file does not exist, we generate the template one
     if not file_stat then
-        local template_filename = M.get_template_filename(template_type)
-        local template_file = string.format("%s/%s/%s", config.path, config.template.path, template_filename)
-        local copied = vim.uv.fs_copyfile(template_file, file_path)
-        if not copied then
-            config._logger:warn(string.format("Error while copying template file %s to %s.", template_file, file_path)) 
-        end
-
+        local template_preset = M.get_template(template_type)
+        template_preset:setOpts({ title = ""})
+        File.writeFile(file_path, template_preset:build())
     end
- 
+
     local cmd_open= string.format("e %s", file_path)
     vim.cmd(cmd_open)
 end
