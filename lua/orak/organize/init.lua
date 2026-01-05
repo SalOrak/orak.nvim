@@ -11,18 +11,18 @@ local config = {
             yearly = Template.new({
                 enclose = "+",
                 eq = "="})
-                :withHeader("date", "{date:%d-%m-%Y}")
+                :withHeader("creation_date", "{date:%d-%m-%Y}")
                 :withBody("# {date:%Y}\n"),
 
             monthly = Template.new({
                 enclose = "+",
                 eq = "="})
-                :withHeader("date", "{date:%d-%m-%Y}")
+                :withHeader("creation_date", "{date:%d-%m-%Y}")
                 :withBody("# {date:%B} monthly goals\n"),
             weekly = Template.new({
                 enclose = "+",
                 eq = "="})
-                :withHeader("date", "{date:%d-%m-%Y}")
+                :withHeader("creation_date", "{date:%d-%m-%Y}")
                 :withBody("# Week {week}\n")
         },
         opts = {
@@ -45,10 +45,10 @@ local config = {
 M.setup = function(opts)
     config = vim.tbl_deep_extend('force', config, opts)
 
-    config.template.files = vim.tbl_deep_extend('force', config.template.files, opts.template.files)
-
+    config.template.set = vim.tbl_deep_extend('force', config.template.set, opts.template.set)
 
     -- Common classes
+    P(opts.template.opts)
     config._template = Template.new(opts.template.opts or {})
     config._logger = Logger.new(opts.logger or {})
 end
@@ -112,9 +112,9 @@ M.open_month= function()
 end
 
 M.open_week = function()
-    local week = os.date('%Y/%m')
+    local week = os.date('%Y/%B')
     local num_week = os.date('%V') % 4
-    local week_file = string.format("/Week-%s.md", num_week)
+    local week_file = string.format("Week-%s.md", num_week)
     local week_folder = string.format("%s/%s", config.path, week)
     open_path(week_folder, week_file, "weekly")
 end
