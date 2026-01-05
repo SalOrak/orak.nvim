@@ -73,19 +73,19 @@ end
 local open_path = function(path, file, template_type)
 
     local norm_path = vim.fs.normalize(path)
-    local real_path = vim.uv.fs_realpath(norm_path) -- Always resolve symlinks
+    local path_stat = vim.uv.fs_stat(norm_path)
 
     --- If path does not exists we create it. 
     --- Only the directory path, not the file
-    if not real_path then 
-        vim.fn.mkdir(real_path, "p")
+    if not path_stat then 
+        vim.fn.mkdir(norm_path, "p")
     end
 
-    local path_stat = vim.uv.fs_stat(norm_path)
 
     local file_path = string.format("%s/%s", norm_path, file)
 
     local file_stat = vim.uv.fs_stat(file_path)
+
     --- If the file does not exist, we generate the template one
     if not file_stat then
         local template_preset = M.get_template(template_type)
