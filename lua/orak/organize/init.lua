@@ -38,7 +38,7 @@ M.get_template_filename = function(template_type)
     local filename = config.template[template_type]
 
     if not filename then
-        local msg = string.format("Template type {} not found. Possible keys are: '{}", template_type, vim.fn.join(vim.tbl_keys(config.template), "',"))
+        local msg = string.format("Template type %s not found. Possible keys are: '%s", template_type, vim.fn.join(vim.tbl_keys(config.template), "',"))
         config._logger:error(msg)
         return nil
     end
@@ -62,21 +62,21 @@ local open_path = function(path, file, template_type)
 
     local path_stat = vim.uv.fs_stat(norm_path)
 
-    local file_path = string.format("{}/{}", norm_path, file)
+    local file_path = string.format("%s/%s", norm_path, file)
 
     local file_stat = vim.uv.fs_stat(file_path)
     --- If the file does not exist, we copy the template one
     if not file_stat then
         local template_filename = M.get_template_filename(template_type)
-        local template_file = string.format("{}/{}/{}", config.path, config.template.path, template_filename)
+        local template_file = string.format("%s/%s/%s", config.path, config.template.path, template_filename)
         local copied = vim.uv.fs_copyfile(template_file, file_path)
         if not copied then
-            config._logger:warn(string.format("Error while copying template file {} to {}.", template_file, file_path)) 
+            config._logger:warn(string.format("Error while copying template file %s to %s.", template_file, file_path)) 
         end
 
     end
  
-    local cmd_open= string.format("e {}", file_path)
+    local cmd_open= string.format("e %s", file_path)
     vim.cmd(cmd_open)
 end
 
@@ -97,14 +97,14 @@ end
 M.open_week = function()
     local week = os.date('%Y/%m')
     local num_week = os.date('%V') % 4
-    local week_file = string.format("/Week-{}.md", num_week)
+    local week_file = string.format("/Week-%s.md", num_week)
     local week_folder = config.path .. week 
     open_path(week_folder, week_file, "weekly")
 end
 
 M.open_inbox = function()
     local year = os.date('%Y')
-    local inbox_path = string.format("{}/{}",config.path, year)
+    local inbox_path = string.format("%s/%s",config.path, year)
     open_path(inbox_path, config.inbox)
 end
 
