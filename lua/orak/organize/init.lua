@@ -4,26 +4,28 @@ local File = require'orak.common.file'
 
 local M = {}
 
+local yearly = Template.new({ enclose = "+", eq = "="})
+                :withHeader("creation-date", "{date:%d-%m-%Y}") 
+                :withBody("# {date:%Y}\n")
+local monthly = Template.new({ enclose = "+", eq = "="}) 
+                :withHeader("creation-date", "{date:%d-%m-%Y}")
+                :withBody("# {date:%B} monthly goals\n")
+local weekly = Template.new({enclose = "+", eq = "="})
+                :withHeader("creation-date", "{date:%d-%m-%Y}")
+                :withBody("# Week {week}\n")
+
+local inbox = Template.new({enclose = "+", eq = "="})
+                :withHeader("creation-date", "{date:%d-%m-%Y}")
+                :withBody("# Inbox \n")
+
 local config = {
     path = "~/.organize/",
     template = {
         set = {
-            yearly = Template.new({
-                enclose = "+",
-                eq = "="})
-                :withHeader("creation-date", "{date:%d-%m-%Y}")
-                :withBody("# {date:%Y}\n"),
-
-            monthly = Template.new({
-                enclose = "+",
-                eq = "="})
-                :withHeader("creation-date", "{date:%d-%m-%Y}")
-                :withBody("# {date:%B} monthly goals\n"),
-            weekly = Template.new({
-                enclose = "+",
-                eq = "="})
-                :withHeader("creation-date", "{date:%d-%m-%Y}")
-                :withBody("# Week {week}\n")
+            yearly = yearly,
+            monthly = monthly,
+            weekly = weekly,
+            inbox = inbox,
         },
         opts = {}
     },
@@ -44,6 +46,12 @@ M.setup = function(opts)
 
     -- Common classes
     config._logger = Logger.new(opts.logger or {})
+
+    --- Metatable disappears when merging tables.
+    --- We just re-insert the metatables for each set.
+    for k,v in pairs(config.template.set) do
+        config.template.set[k] = setmetatable(v, Template)
+    end
 end
 
 M._get_config = function()
@@ -86,6 +94,10 @@ local open_path = function(path, file, template_type)
     --- If the file does not exist, we generate the template one
     if not file_stat then
         local template_preset = M.get_template(template_type)
+        if not template_preset  then
+            config._logger:error(string.format("No template found for %s", template_type))
+            return
+        end
         template_preset:setOpts(config.template.opts or {})
         File.writeFile(file_path, template_preset:build())
     end
@@ -119,7 +131,7 @@ end
 M.open_inbox = function()
     local year = os.date('%Y')
     local inbox_path = string.format("%s/%s",config.path, year)
-    open_path(inbox_path, config.inbox)
+    open_path(inbox_path, config.inbox, "inbox")
 end
 
 return M

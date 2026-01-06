@@ -70,7 +70,7 @@ end
 ---@return template Template
 function Template:setOpts(opts)
 	self.data = vim.tbl_deep_extend("force", self.data, opts or {})
-	self._substitution = vim.tbl_deep_extend("keep", self._substitution, opts.substitution or {})
+	self._substitution = vim.tbl_deep_extend("force", self._substitution, opts.substitution or {})
 	return self
 end
 
