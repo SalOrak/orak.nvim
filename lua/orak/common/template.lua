@@ -17,6 +17,7 @@ local default_opts = {
         --- The key of the function will be used as the substitution 
         --- pattern.
 		substitution = {},
+		reverse = false, --- `true` if header should go after the body.
 	},
 	_header = "",
 	_body = "",
@@ -78,6 +79,9 @@ end
 function Template:build()
 	self._header = string.format("%s\n%s", self._header, string.rep(self.data.enclose, 3, ""))
 	local result = string.format("%s\n%s", self._header, self._body)
+	if self.reverse then
+		result = string.format("%s\n%s", self._body, self._header)
+	end
 	result = self:performSubstitution(result)
 	return result
 end
