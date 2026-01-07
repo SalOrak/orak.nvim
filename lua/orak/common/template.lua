@@ -79,7 +79,7 @@ end
 function Template:build()
 	self._header = string.format("%s\n%s", self._header, string.rep(self.data.enclose, 3, ""))
 	local result = string.format("%s\n%s", self._header, self._body)
-	if self.reverse then
+	if self.data.reverse then
 		result = string.format("%s\n%s", self._body, self._header)
 	end
 	result = self:performSubstitution(result)
