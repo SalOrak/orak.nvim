@@ -112,43 +112,39 @@ M.get_base_path = function()
 	return config.path
 end
 
-M.year_as_str = function()
+M.get_year_path = function()
 	local year = os.date('%Y')
-	return year
+    local year_folder = string.format("%s/%s", config.path, year)
+	return year_folder
 end
 
-M.month_as_str = function()
+M.get_month_path= function()
+	local year = os.date('%Y')
 	local month = os.date('%B'):gsub("^%l", string.upper)
-	return month
+    month = year .. "/" .. month
+    local month_folder = string.format("%s/%s", config.path, month)
+	return month_folder
 end
 
-M.week_number_as_str = function()
+M.get_week_path = function()
+    local year = os.date("%Y")
+    local week = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
     local num_week = os.date('%V') % 4
-	return year
+    local week_file = string.format("Week-%s.md", num_week)
+    local week_folder = string.format("%s/%s", config.path, week)
+	return week_folder
 end
 
 M.open_year = function()
-    local year = M.year_as_str()
-    local year_folder = string.format("%s/%s", config.path, year)
-
-    open_path(year_folder, config.index, "yearly")
+    open_path(M.get_year_path(), config.index, "yearly")
 end
 
 M.open_month= function()
-    local year = M.year_as_str()
-    local month = year .. "/" .. M.month_as_str()
-    local month_folder = string.format("%s/%s", config.path, month)
-
-    open_path(month_folder, config.index, "monthly")
+    open_path(M.get_month_path(), config.index, "monthly")
 end
 
 M.open_week = function()
-    local year = os.date("%Y")
-    local week = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
-    local num_week = M.week_number_as_str()
-    local week_file = string.format("Week-%s.md", num_week)
-    local week_folder = string.format("%s/%s", config.path, week)
-    open_path(week_folder, week_file, "weekly")
+    open_path(M.get_week_path(), week_file, "weekly")
 end
 
 ---@param path string Path to the directory where the file lives relative to the
