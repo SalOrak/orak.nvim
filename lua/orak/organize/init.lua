@@ -106,16 +106,37 @@ local open_path = function(path, file, template_type)
     vim.cmd(cmd_open)
 end
 
+
+---@return base_path string Returns the base path to the organization directory.
+M.get_base_path = function()
+	return config.path
+end
+
+M.year_as_str = function()
+	local year = os.date('%Y')
+	return year
+end
+
+M.month_as_str = function()
+	local month = os.date('%B'):gsub("^%l", string.upper)
+	return month
+end
+
+M.week_number_as_str = function()
+    local num_week = os.date('%V') % 4
+	return year
+end
+
 M.open_year = function()
-    local year = os.date('%Y')
+    local year = M.year_as_str()
     local year_folder = string.format("%s/%s", config.path, year)
 
     open_path(year_folder, config.index, "yearly")
 end
 
 M.open_month= function()
-    local year = os.date("%Y")
-    local month = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
+    local year = M.year_as_str()
+    local month = year .. "/" .. M.month_as_str()
     local month_folder = string.format("%s/%s", config.path, month)
 
     open_path(month_folder, config.index, "monthly")
@@ -124,7 +145,7 @@ end
 M.open_week = function()
     local year = os.date("%Y")
     local week = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
-    local num_week = os.date('%V') % 4
+    local num_week = M.week_number_as_str()
     local week_file = string.format("Week-%s.md", num_week)
     local week_folder = string.format("%s/%s", config.path, week)
     open_path(week_folder, week_file, "weekly")
