@@ -131,7 +131,7 @@ M.open_week = function()
 end
 
 ---@param path string Path to the directory where the file lives relative to the
----configuration path `config.path`.
+---configuration path `config.path`. Can be an empty string
 ---@param file string Name of the file to open
 ---@param type string Name of the type. Must exist in `config.template.set`. It
 ---is dynamically populated by the user.
