@@ -114,18 +114,28 @@ M.open_year = function()
 end
 
 M.open_month= function()
-    local month = os.date('%Y/%B')
+    local year = os.date("%Y")
+    local month = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
     local month_folder = string.format("%s/%s", config.path, month)
 
     open_path(month_folder, config.index, "monthly")
 end
 
 M.open_week = function()
-    local week = os.date('%Y/%B')
+    local year = os.date("%Y")
+    local week = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
     local num_week = os.date('%V') % 4
     local week_file = string.format("Week-%s.md", num_week)
     local week_folder = string.format("%s/%s", config.path, week)
     open_path(week_folder, week_file, "weekly")
+end
+
+---@param path string Path to the directory where the file lives
+---@param file string Name of the file to open
+---@param type string Name of the type. Must exist in `config.template.set`. It
+---is dynamically populated by the user.
+M.open_custom = function(path, file, type)
+    open_path(path, file, type)
 end
 
 M.open_inbox = function()

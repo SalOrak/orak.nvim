@@ -8,6 +8,8 @@ Logger.verbosity = vim.log.levels.WARN
 Logger.prefix = "[Log]: "
 
 
+
+
 --- Creates a new Logger. 
 --- @param opts table Options for the logger.
     --- @param verbosity vim.log.levels Minimum verbosity
