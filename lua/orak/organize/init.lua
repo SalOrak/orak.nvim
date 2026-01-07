@@ -130,12 +130,14 @@ M.open_week = function()
     open_path(week_folder, week_file, "weekly")
 end
 
----@param path string Path to the directory where the file lives
+---@param path string Path to the directory where the file lives relative to the
+---configuration path `config.path`.
 ---@param file string Name of the file to open
 ---@param type string Name of the type. Must exist in `config.template.set`. It
 ---is dynamically populated by the user.
 M.open_custom = function(path, file, type)
-    open_path(path, file, type)
+	local p = string.format("%s/%s", config.path, path)
+    open_path(p, file, type)
 end
 
 M.open_inbox = function()
