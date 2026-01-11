@@ -119,28 +119,29 @@ M.get_year_path = function()
 end
 
 M.get_month_path = function()
-	local year = os.date('%Y')
+	local year = M.get_year_path()
 	local month = os.date('%B'):gsub("^%l", string.upper)
-    month = year .. "/" .. month
-    local month_folder = string.format("%s/%s", config.path, month)
+    local month_folder = year .. "/" .. month
 	return month_folder
 end
 
 M.get_week_path = function()
-    local year = os.date("%Y")
-    local week = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
+	--- Because the Week files are in the same folder as the month file,
+	--- it just returns the same thing
+	return M.get_month_path()
+end
+
+M.get_week_number = function()
 	--- Sunday as the first day of the week
-    local num_week = os.date('%U') % 4
-    local week_folder = string.format("%s/%s", config.path, week)
-	return week_folder
+	--- Add 1 because %U starts at Week 0.
+    local num_week = (os.date('%U') + 1) % 4
+	return num_week
 end
 
 M.get_week_file_path = function()
-    local year = os.date("%Y")
-    local week = year .. "/" .. os.date('%B'):gsub("^%l", string.upper)
-    local num_week = os.date('%U') % 4
-    local week_folder = string.format("%s/%s", config.path, week)
-	return string.format("%s/Week-%s.md",week_folder, num_week)
+	local week_folder = M.get_week_path()
+    local num_week = M.get_week_number()
+	return string.format("%s/Week-%s.md", week_folder, num_week)
 end
 
 M.open_year = function()
@@ -152,7 +153,7 @@ M.open_month= function()
 end
 
 M.open_week = function()
-    local num_week = os.date('%U') % 4
+    local num_week = M.get_week_number()
     local week_file = string.format("Week-%s.md", num_week)
     open_path(M.get_week_path(), week_file, "weekly")
 end
