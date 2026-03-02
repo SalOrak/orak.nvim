@@ -6,6 +6,8 @@ local M = {
 	jobid = -1,
 }
 
+local config = { }
+
 local listed_bufs = function()
 	local bufs = vim.api.nvim_list_bufs()
 	local listed_bufs = {}
@@ -72,3 +74,11 @@ M.toggle_terminal = function()
 		end
 	end
 end
+
+
+M.setup = function(opts)
+	config = vim.tbl_deep_extend('force', config, opts)
+end
+
+
+return M
