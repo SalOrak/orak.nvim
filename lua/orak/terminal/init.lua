@@ -36,20 +36,13 @@ local non_term_bufs = function()
 	return non_term_bufs
 end
 
-M._terminal_create = function()
+local terminal_create = function()
 	local bufnr = vim.api.nvim_create_buf(true, false)
 	vim.api.nvim_set_current_buf(bufnr)
 	vim.cmd("term")
 	vim.bo[bufnr].modifiable = true
 
 	return bufnr
-end
-
-
-M._terminal_job = function()
-	local jobid = vim.fn.jobstart({"nvim", "-h"}, {"term" = true})
-	M.jobid = jobid
-	return jobid
 end
 
 M.toggle_terminal = function()
@@ -69,7 +62,7 @@ M.toggle_terminal = function()
 		if vim.api.nvim_buf_is_valid(M.term_bufnr) then
 			vim.api.nvim_set_current_buf(M.term_bufnr)
 		else
-			local term_buf = M._terminal_create()
+			local term_buf = terminal_create()
 			M.term_bufnr = term_buf
 		end
 	end
